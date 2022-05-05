@@ -1,0 +1,4 @@
+
+test:
+  activate: activate-uat
+  myEnv: ENC(u+1e5ieUfgBzTnuHwGFgO3skorZhQQyqqIfvIq9fy/Y=)

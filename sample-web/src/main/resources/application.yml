@@ -1,0 +1,62 @@
+# 加密配置
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES #加密方式
+    password: a#Je&lJYj^b3I4Up #加密密码
+
+#App服务配置
+spring:
+  jackson: # Jackson配置
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  messages:
+    encoding: UTF-8
+    basename: i18n.messages
+
+# baomidou-mybatisplus 配置，修改主键类型，mapper.xml、type 别名等
+mybatis-plus:
+  #mapper扫描
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-handlers-package: com.hanwj.framework.datasource.handler
+  #实体扫描，多个package用逗号或者分号分隔
+  #type-aliases-package com.baomidou.springboot.entity
+  #枚举类 扫描路径，如果配置了该属性，会将路径下的枚举类进行注入，让实体类字段能够简单快捷的使用枚举属性
+  type-enums-package: com.hanwj.*.model.*.enums
+  # 关闭MP3.0自带的banner
+  banner: false
+  global-config:
+    #刷新mapper 调试神器
+    refresh: true
+    # 数据库相关配置
+    db-config:
+      #主键类型  AUTO:"数据库ID自增", INPUT:"用户输入ID",ASSIGN_ID:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+      id-type: ASSIGN_ID
+      #字段策略 IGNORED:"忽略判断",NOT_NULL:"非 NULL 判断"),NOT_EMPTY:"非空判断"
+      field-strategy: not_empty
+      #驼峰下划线转换
+      column-underline: true
+      #数据库大写下划线转换
+      #capital-mode: true
+      #逻辑删除配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      db-type: mysql
+  # 原生配置
+  configuration:
+    map-underscore-to-camel-case: true
+    #全局地开启或关闭配置文件中的所有映射器已经配置的任何缓存，默认为 true
+    cache-enabled: true
+#请求方式
+#/doc.html
+swagger:
+  title: Hanwj-API接口定义说明
+  license: Powered By Hanwj
+  licenseUrl: https://www.hanwj.com/
+  terms-of-service-url: https://www.wenjay.com/
+  contact:
+    email: wenjay@gmail.com
+    url: https://www.wenjay.com/about.html

@@ -1,0 +1,4 @@
+
+test:
+  activate: activate-prod
+  myEnv: ENC(P/3y9uI1rnOic9NgpuMioxFI/N+0p017g+NZancrDaQ=)

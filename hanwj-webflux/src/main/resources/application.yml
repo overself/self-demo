@@ -1,0 +1,11 @@
+# 加密配置
+jasypt:
+  encryptor:
+    algorithm: PBEWithMD5AndDES #加密方式
+    password: a#Je&lJYj^b3I4Up #加密密码
+
+#App服务配置
+spring:
+  jackson: # Jackson配置
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
