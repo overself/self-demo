@@ -1,0 +1,79 @@
+server:
+  port: 6002
+
+# App服务配置
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: @artifactId@
+  profiles:
+    active: dev
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: true
+        
+# log配置
+logback:
+  home: /var/local/logs/${spring.application.name}
+  back: /var/local/logs/${spring.application.name}/backup
+  file:
+    maxHistory: 7
+    maxsize: 50mb
+    totalSizeCap: 20gb
+
+#Hystrix与Feign参数配置、请求处理的超时时间(Feign优于Ribbon的超时配置)
+ribbon:
+  ReadTimeout: 50000
+  ConnectTimeout: 50000
+
+feign: #feign的配置
+  hystrix:
+    enabled: true
+  okhttp:
+    enabled: true
+  httpclient:
+    enabled: false
+  client:
+    config:
+      default:
+        connectTimeout: 50000
+        readTimeout: 50000
+      dxz-webchat-console: #具体APP服务的请求超时
+        connectTimeout: 50000
+        readTimeout: 50000
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+# hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
+# you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
+#隔离策略，默认是Thread,可选Thread｜Semaphore。thread用于线程池的隔离，一般适用于同步请求。semaphore是信号量模式，适用于异步请求
+hystrix:
+  command:
+    default:
+      fallback:
+        enabled: true #当执行失败（run方法抛异常）或者请求被拒绝（资源不足）会尝试调用Fallback，默认true
+      execution:
+        isolation:
+          #THREAD: 在单独的线程上执行，并发请求受线程池中的线程数限制
+          #SEMAPHORE: 在调用线程上执行，并发请求量受信号量计数限制
+          strategy: SEMAPHORE # THREAD｜SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 60000
+  shareSecurityContext: true
+
+# 配置服务监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  #开放所有页面节点 ，默认只开启了health、info两个节点
+  endpoint:
+    info:
+      enabled: true
+    health:
+      show-details: always #显示健康具体信息，默认不会显示详细信息
