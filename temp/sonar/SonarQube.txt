@@ -1,0 +1,167 @@
+目录
+
+背景介绍
+环境、软件准备
+Sonar GitLab Plugin 安装
+配置使用说明
+1、背景介绍
+
+我们知道使用 SonarQube 可以在日常开发中检测代码质量，除了使用 IDE 上集成 SonarLint 插件检测外，如果我们想针对代码托管在 Gitlab 上每次 commit 的文件做代码检测，可以不可以呢？答案是肯定的，我们可以使用 Sonar GitLab Plugin 插件完成，该插件会针对每次提交修改的文件，添加注释行，同时添加本次提交的代码检测结果的评论。我们还可以配合 gitlab-ci 完成每次 commit 时，添加的代码检测 Pipelines stage 流程，来控制代码检测流程是否通过。
+
+2、环境、软件准备
+
+本次演示环境，我是在虚拟机 Linux Centos7 和本机 Mac OX 上操作，以下是安装的软件及版本：
+
+Docker：version 1.12.6
+SonarQube：version 6.5
+sonar-gitlab-plugin：version 2.1.0
+GitLab：version Community Edition 9.1.4
+gitlab-runner：version 1.11.2
+注意：我们将代码托管在 GitLab 上，这里 GitLab 基于 Docker 安装，所以需要安装 Docker，本次还需要演示 跟 gitlab-runner 配合使用，所以也需要安装 gitlab-runner，这里 Docker、SonarQube、GitLab、gitlab-runner 的安装忽略。
+
+3、Sonar GitLab Plugin 安装
+
+在 SonarQube 上安装该插件安装方式很简单。
+
+方式一：可以直接下载 sonar-gitlab-plugin-2.1.0 该插件，放到 <sonarqube_install_dir>/extensions/plugins 目录，重启 SonarQube 即可。
+
+方式二：admin 登录 SonarQube，点击 配置 —> 系统 —> 更新中心 —> Available —> Search，输入 GitLab，在列表中点击 install 安装，安装完毕后重启 SonarQube 即可。
+
+注意：该插件 sonar-gitlab-plugin 兼容 SonarQube 的版本信息如下
+
+SonarQube	sonar-gitlab-plugin	Last version
+<version> < 5.4	<version> <= 1.6.6	1.66
+5.4 <= <version> < 5.6	<version> = 1.7.0	1.7.0
+<version> >= 5.6	<version> > 1.7.0	2.1.0
+因为我本机 SonarQube 版本为 6.5，所以这里我选择 2.1.0 最新版本插件。
+
+4、配置使用说明
+
+4.1 配置 GitLab 通用账户
+
+这里为了方便统一管理，我们在 GitLab 上注册一个通用账号：sonarQube，作为对接 SonarQube 的统一账户，注册过程略，获取Token方式入下：
+sonarQube 登录，点击 setting —> Account —> Private Token，获取的 User Token 为下边插件配置使用。同时还需要将 SonarQube 加到项目成员或项目所属项目组成员里面去，这样才能有权限 comment 和添加注释行。
+
+
+
+4.2 配置 sonar-gitlab-plugin 插件
+
+admin 登录 SonarQube，点击 配置 —> 通用配置 —> GitLab —> Reporting —> 设置 GitLab User Token 以及 GitLab url。
+
+
+
+注意：GitLab url 为配置的 GitLab 服务地址（本机 GitLab 地址：http://10.236.65.148），GitLab User Token 为 GitLab 上用户的 Token（这里使用上边统一账户 sonarQube Token），其他配置默认即可。
+
+4.3 配置 gitlab-runner
+
+这里忽略 GitLab CI Runner 安装过程，详情参考之前文章 Docker搭建自己的Gitlab CI Runner 写的比较详细。这里我们以一个 Maven Project：mavenDemo 为例演示，我们配置 .gitlab-ci.yml 来实现 sonar-gitlab-plugin 插件添加注释行和检测结果评论，以及 Pipeline Stage 代码检测流程是否通过。
+
+配置 .gitlab-ci.yml
+
+sonar_preview:
+  stage: test
+  script:
+    - ci/sonar_preview.sh
+  except:
+    - master
+  tags:
+    - hwy
+
+auto_test:
+  stage: test
+  script: ci/auto_test.sh
+  except:
+    - master
+  tags:
+    - hwy
+
+sonar_analyze:
+  stage: test
+  script:
+    - ci/sonar_analyze.sh
+  only:
+    - master
+  tags:
+    - hwy
+说明：这里我们把 Pipeline 流程分为两种，一种是除了 master 分支的，进行 sonar_preview (sonar 预览) 以及 auto_test (模拟自动化测试)，另一种只针对 master 分支，进行 sonar_analyze (sonar 分析)，大概意思就是对非 master 分支进行日常模拟自动化测试和使用 Sonar Gitlab 插件添加注释行和检测结果评论以及本次提交代码质量是否通过，对 master 分支上线前走一次静态代码检测。每个步骤操作内容如下。
+
+修新增 ci/auto_test.sh 文件
+
+#!/bin/bash
+
+COMMITTER=$(git log -1 --format=%cE)
+echo ${COMMITTER}
+
+if [ $? -eq 0 ]; then
+     echo "do something for auto_test here."
+     echo "auto_test over."
+fi  
+
+说明：这里模拟自动化测试脚本，具体使用时自己配置。
+
+新增 ci/sonar_analyze.sh 文件
+
+#!/bin/bash
+
+mvn --batch-mode sonar:sonar \
+    -Dsonar.host.url=http://10.236.65.36:9000 \
+    -Dsonar.login=wanyang3 \
+    -Dsonar.password=****** \
+    -Dsonar.issuesReport.html.enable=true \
+    -Dsonar.analysis.mode=preview \
+    -Dsonar.preview.excludePlugins=issueassign,scmstats
+
+if [ $? -eq 0 ]; then
+    echo "sonarqube code-analyze over."
+fi
+说明：这里 sonar.host.url 为本机或远程 SonarQube 服务地址，sonar.login & sonar.password
+为账户和密码，也可以使用 token。后边的几个参数可参考之前文章 SonarQube 插件之 Issues Report & SonarLint 的配置及使用 说明。
+
+新增 ci/sonar_preview.sh 文件
+
+#!/bin/bash
+
+mvn --batch-mode verify sonar:sonar \
+    -Dsonar.host.url=http://10.236.65.36:9000 \
+    -Dsonar.login=wanyang3 \
+    -Dsonar.password=****** \
+    -Dsonar.analysis.mode=preview \
+    -Dsonar.gitlab.project_id=$CI_PROJECT_ID \
+    -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA \
+    -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME
+
+if [ $? -eq 0 ]; then
+    echo "sonarqube code-analyze-preview over."
+fi
+说明：sonar.gitlab.* 参数为插件可使用变量，每个变量有不同的用处，具体可参考 Sonar Gitlab Plugins properties，$CI_PROJECT_ID，$CI_COMMIT_SHA，$CI_COMMIT_REF_NAME 等变量为 GitLab CI 变量，可以在 CI 流程中直接使用这些变量，具体可参考 GitLab CI Variables。
+
+好了，配置完成之后，我们现在可以修改并提交代码，看看效果吧。这里在 develop 分支故意写一些垃圾代码，验证下插件是否能够正确添加注释行以及添加检测结果评论，master 分支做一下提交验证下之前 sonar 静态代码检测结果。
+
+cd mavenDemo
+git checkout develop
+
+添加垃圾代码如下
+...
+String txt = "Hello world";
+System.out.println(txt.substring(15));
+int result = 1/0;
+...
+
+git commit -am "modify code"
+git push
+提交完毕之后，我们去 GitLab 该项目下查看 Pipelines 状态、每个 stage 的执行日志以及本次提交的文件插件添加的注释行和检测结果评论吧。
+
+说明： 从上图我们可以看到整个 pipelines 状态是 Failed 状态，因为 Sonar 检测结果中有严重级别的 bug 不能通过，这也正是我们想要的结果。还有我们在 .gitlab-ci.yml 文件中配置了非 master 分支执行 auto_test、sonar_preview 两步操作，图上可以看出有三步操作，那是因为最后一步是 External 外部的 sonarqube 增加的检测步骤。
+说明：从上图可以看出 sonar-gitlab 插件针对有问题的代码行增加了注释行，同时增加了本次 commit 的文件的检测结果的评论，一目了然。
+
+好了，通过这个插件配合 GitLab CI 我们可以很方便的做到对日常每次提交做代码检测，大大提高了我们代码质量，当然要想写出高质量代码还得靠我们自己的哈，这里只不过是再做了一次代码检测，避免意外情况导致的代码错误。同时，我们可以把这个流程做到日常开发持续集成步骤中，也是大有裨益的。
+
+另外，如果我们不想使用 GitLab CI 使用该插件，也可以直接使用命令行的方式返回结果，详情查看该插件文档。
+
+参考资料
+
+sonar-gitlab-plugin
+GitLab CI Variables
+————————————————
+版权声明：本文为CSDN博主「哎_小羊_168」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/aixiaoyang168/article/details/78115646
