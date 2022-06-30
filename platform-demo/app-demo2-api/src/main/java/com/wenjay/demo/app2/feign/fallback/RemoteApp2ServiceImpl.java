@@ -17,7 +17,6 @@ import java.util.Map;
  * @author HanWenjie
  */
 @Slf4j
-@Component
 public class RemoteApp2ServiceImpl implements RemoteApp2Service {
 
     @Setter
@@ -25,7 +24,7 @@ public class RemoteApp2ServiceImpl implements RemoteApp2Service {
 
     @Override
     public Result<Map<String, Object>> getAppName(@PathVariable("id") Integer id) {
-        log.error("feign Remote-App2 请求失败:{}", id, cause);
+        log.error("feign Remote-App2 请求失败:{} - {}", id, cause.getMessage());
         return Result.failed(cause.getMessage());
     }
 }

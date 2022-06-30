@@ -35,7 +35,7 @@ public class CommonController {
     @GetMapping("/test/app-feign/{id}")
     public Result<Map<String, Object>> testFeignAppName(@PathVariable("id") Integer id) {
         Result<Map<String, Object>> result = app1Service.getAppName(id);
-        log.info("result：{}", result);
+        log.info("result：{}-{}", result.getCode(), result.getMsg());
         return Result.ok(result.getResult());
     }
 }

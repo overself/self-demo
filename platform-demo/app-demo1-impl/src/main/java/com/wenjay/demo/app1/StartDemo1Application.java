@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableWenjaySwagger2
-@EnableFeignClients(basePackages = "com.wenjay.demo.*")
+@EnableFeignClients(basePackages = "com.wenjay.demo")
 public class StartDemo1Application {
     public static void main(String[] args) {
         SpringApplication.run(StartDemo1Application.class, args);

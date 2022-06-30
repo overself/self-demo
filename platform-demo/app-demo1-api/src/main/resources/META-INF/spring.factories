@@ -1,5 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.wenjay.demo.app1.feign.factory.RemoteApp1ServiceFactory
-
-org.springframework.cloud.openfeign.FeignAutoConfiguration=\
-  com.wenjay.demo.app1.feign.fallback.RemoteApp1ServiceImpl
+  com.wenjay.demo.app1.feign.factory.RemoteApp1ServiceFactory

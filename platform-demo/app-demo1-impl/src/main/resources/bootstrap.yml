@@ -18,6 +18,7 @@ spring:
     loadbalancer:
       ribbon:
         enabled: true
+
 ---
 spring:
   config:

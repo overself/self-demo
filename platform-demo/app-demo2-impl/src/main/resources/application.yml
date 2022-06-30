@@ -65,14 +65,27 @@ swagger:
     email: wenjay@gmail.com
     url: https://www.wenjay.com/about.html
 
+
 #Hystrix与Feign参数配置、请求处理的超时时间(Feign优于Ribbon的超时配置)
 ribbon:
-  ReadTimeout: 50000
-  ConnectTimeout: 50000
+  httpclient:
+    enabled: false
+  okhttp:
+    enabled: true
+  ConnectTimeout: 3000
+  ReadTimeout: 5000
+  SocketTimeout: 5000
+  OkToRetryOnAllOperations: true #开启重试机制
+  MaxAutoRetriesNextServer: 2 #尝试更换两次实例重试，失败之后进行重试
+  MaxAutoRetries: 2 #先尝试访问首选实例一次，失败之后才更换实例访问
 
 feign: #feign的配置
-  hystrix:
+  sentinel:
+    enabled: false #熔断组件是sentinel
+  circuitbreaker:
     enabled: true
+#  hystrix:
+#    enabled: true
   okhttp:
     enabled: true
   httpclient:
@@ -80,30 +93,36 @@ feign: #feign的配置
   client:
     config:
       default:
-        connectTimeout: 50000
-        readTimeout: 50000
+        connectTimeout: 3000
+        readTimeout: 3000
   compression:
     request:
       enabled: true
     response:
       enabled: true
 
+#断路器的超时时间,下级服务返回超出熔断器时间，即便成功，消费端消息也是TIMEOUT,所以一般断路器的超时时间需要大于ribbon的超时时间，ribbon是真正去调用下级服务
+#当服务的返回时间大于ribbon的超时时间，会触发重试
+#断路器的超时时间默认为1000ms，太小了
+#
 # hystrix If you need to use ThreadLocal bound variables in your RequestInterceptor`s
 # you will need to either set the thread isolation strategy for Hystrix to `SEMAPHORE or disable Hystrix in Feign.
 #隔离策略，默认是Thread,可选Thread｜Semaphore。thread用于线程池的隔离，一般适用于同步请求。semaphore是信号量模式，适用于异步请求
-hystrix:
-  command:
-    default:
-      fallback:
-        enabled: true #当执行失败（run方法抛异常）或者请求被拒绝（资源不足）会尝试调用Fallback，默认true
-      execution:
-        isolation:
-          #THREAD: 在单独的线程上执行，并发请求受线程池中的线程数限制
-          #SEMAPHORE: 在调用线程上执行，并发请求量受信号量计数限制
-          strategy: SEMAPHORE # THREAD｜SEMAPHORE
-          thread:
-            timeoutInMilliseconds: 60000
-  shareSecurityContext: true
+#hystrix:
+#  command:
+#    default:
+#      fallback:
+#        enabled: true #当执行失败（run方法抛异常）或者请求被拒绝（资源不足）会尝试调用Fallback，默认true
+#      execution:
+#        timeout:
+#          enabled: true
+#        isolation:
+#          #THREAD: 在单独的线程上执行，并发请求受线程池中的线程数限制
+#          #SEMAPHORE: 在调用线程上执行，并发请求量受信号量计数限制
+#          strategy: SEMAPHORE # THREAD｜SEMAPHORE
+#          thread:
+#            timeoutInMilliseconds: 60000 #断路器的超时时间默认为1000ms
+#  shareSecurityContext: true
 
 # 配置服务监控
 management:
