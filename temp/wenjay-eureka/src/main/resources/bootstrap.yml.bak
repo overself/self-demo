@@ -1,0 +1,129 @@
+server:
+  port: 7001
+
+# log配置
+logging:
+  level:
+    root: info
+    com.wenjay: debug
+  #path: ./
+  path: /var/local/logs
+
+# 安全认证
+spring:
+  application:
+    name: wenjay-eureka
+  profiles:
+    active: dev
+  security:
+    basic:
+      enabled: false # 启用身份认证
+    user:
+      name: wenjay # 定义用户名
+      password: wenjay # 定义密码
+
+# 配置服务监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'  #开放所有页面节点 ，默认只开启了health、info两个节点
+  endpoint:
+    health:
+      show-details: always #显示健康具体信息，默认不会显示详细信息 
+
+---
+spring:
+  profiles: dev
+# 注册中心配置
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+    lease-expiration-duration-in-seconds: 30  #  10s未收到心跳，剔除instance 要比心跳时间大 （默认为90秒）
+    lease-renewal-interval-in-seconds: 10  # 心跳时间（默认30秒）
+  client:
+    register-with-eureka: false #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息（默认是true）
+    registry-fetch-interval-seconds: 10 # 从Eureka服务获取服务注册信息的时间间隔，默认为30秒
+    serviceUrl:
+      defaultZone: http://wenjay:wenjay@${eureka.instance.hostname}:${server.port}/eureka
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false # true 启动保护机制
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9
+
+---
+spring:
+  profiles: auto
+# 注册中心配置
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false
+  client:
+    register-with-eureka: false #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl:
+      defaultZone: http://wenjay:wenjay@${eureka.instance.hostname}:${server.port}/eureka
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9
+
+---
+spring:
+  profiles: uat
+# 注册中心配置
+eureka:
+  instance:
+    hostname: wenjay-eureka
+    prefer-ip-address: false #true为不使用主机名来定义注册中心的地址，而使用IP地址的形式
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl: #defaultZone中是以域名的方式向注册中心注册的
+      #defaultZone: http://wenjay:wenjay@${eureka-peer1.hostname}:${eureka-peer1.port}/eureka
+      defaultZone: ${eureka-peer.zone}
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9
+
+---
+spring:
+  profiles: pre
+# 注册中心配置
+eureka:
+  instance:
+    hostname: wenjay-eureka
+    prefer-ip-address: false #true为不使用主机名来定义注册中心的地址，而使用IP地址的形式
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl: #defaultZone中是以域名的方式向注册中心注册的
+      #defaultZone: http://wenjay:wenjay@${eureka-peer1.hostname}:${eureka-peer1.port}/eureka
+      defaultZone: ${eureka-peer.zone}
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9
+
+---
+spring:
+  profiles: prod
+# 注册中心配置
+eureka:
+  instance:
+    hostname: wenjay-eureka
+    prefer-ip-address: false #true为不使用主机名来定义注册中心的地址，而使用IP地址的形式
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl: #defaultZone中是以域名的方式向注册中心注册的
+      #defaultZone: http://wenjay:wenjay@${eureka-peer1.hostname}:${eureka-peer1.port}/eureka,http://dxz:dxz@${eureka-peer2.hostname}:${eureka-peer2.port}/eureka
+      defaultZone: ${eureka-peer.zone}
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9

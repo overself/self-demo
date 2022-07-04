@@ -1,0 +1,72 @@
+# 数据源
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: Panhai@123 #ENC(XEq5sJ4wLgFfbKiUuM0jmnTtL+Y8ZzR5)
+    url: jdbc:mysql://10.100.111.12:3306/ph_uads_aisp_business?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowMultiQueries=true
+#  sleuth:
+#    sampler:
+#      probability: 1
+#  zipkin:
+##    base-url: http://ph-uads-zipkin:9001
+#    sender:
+#      type: kafka
+#    kafka:
+#      topic: zipkin-dev
+#  kafka:
+#    bootstrap-servers: 172.16.101.213:9092,172.16.101.214:9092
+  jackson: # Jackson配置
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  cache: #数据缓存方式
+    type: redis
+  redis: #redis 单点环境配置 （根据情况选择集群或者单机模式）
+    database: 0  #Redis数据库索引(默认为0)
+    port: 6379
+    host: 10.100.131.21
+    password:    #密码没用可以不填
+    #host: localhost
+    #password: 1234   #密码没用可以不填
+    timeout: 6000  #连接超时时间（毫秒）
+    keyPerfix: "uads_${spring.profiles.active}:" #Redis存储key的生成前缀
+    jedis:
+      pool: 
+        max-active: 1000  # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: 60000  # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10  # 连接池中的最大空闲连接
+        min-idle: 5 #连接池中的最小空闲连接
+    #cluster: #redis cluster 集群环境配置
+    #  nodes: 10.100.131.21:6379
+
+## spring security 配置
+security:
+  oauth2:
+    client:
+      client-id: uads_aisp
+      client-secret: uads_aisp
+      scope: server
+
+# 注册中心配置
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: http://uads:uads@localhost:7001/eureka/
+      
+# swagger相关配置,覆盖全局配置
+swagger:
+  authorization:
+    authorization-scope-list:
+      - scope: 'server'
+        description: 'server all'
+      - scope: 'read'
+        description: 'read all'
+      - scope: 'write'
+        description: 'access all'
+      - scope: 'test'
+        description: 'access all'
+      - scope: 'dev'
+        description: 'access all'

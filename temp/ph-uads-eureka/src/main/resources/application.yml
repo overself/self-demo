@@ -1,0 +1,145 @@
+---
+spring:
+  profiles: local
+# 注册中心配置
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: false #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl:
+      defaultZone: http://uads:uads@${eureka.instance.hostname}/eureka/
+  server:  #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000
+    renewal-percent-threshold: 0.9
+
+---
+spring:
+  profiles: dev
+# 注册中心配置
+eureka:
+  instance:
+    hostname: ${ph-uads-eureka.hostname}
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    registry-fetch-interval-seconds: 10 # 从Eureka服务获取服务注册信息的时间间隔，默认为30秒
+    prefer-same-zone-eureka: true #获取serviceUrl时候是否优先获取相同zone的列表(如果获取为空则获取所在region第一个zone),如果为false则优先获取不在相同zone的列表
+    region: dalian #区域
+    availability-zones:
+      dalian: zone-dev,zone-hwj,zone-sh,zone-lj,zone-hc #可用区
+    service-url:
+      zone-dev: http://uads:uads@ph-uads-eureka-zone-dev:${server.port}/eureka/
+      zone-hwj: http://uads:uads@ph-uads-eureka-zone-hwj:${server.port}/eureka/
+      zone-sh: http://uads:uads@ph-uads-eureka-zone-sh:${server.port}/eureka/
+      zone-lj: http://uads:uads@ph-uads-eureka-zone-lj:${server.port}/eureka/
+      zone-hc: http://uads:uads@ph-uads-eureka-zone-hc:${server.port}/eureka/
+    #serviceUrl:
+    #  defaultZone: http://uads:uads@${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+    #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: true
+    # 指定 Eviction Task 定时任务的调度频率，用于剔除过期的实例，此处未使用默认频率，频率为：5/秒，默认为：60/秒
+    # 有效防止的问题是：应用实例异常挂掉，没能在挂掉之前告知Eureka server要下线掉该服务实例信息。这个就需要依赖Eureka server的EvictionTask去剔除。
+    eviction-interval-timer-in-ms: 5000
+    # 指定每分钟需要收到的续约次数的阈值，默认值就是：0.85
+    renewal-percent-threshold: 0.85
+    # 续约频率提高，默认：30
+    lease-renewal-interval-in-seconds: 10
+    # 此处不开启缓存 或者调整 readWriteCacheMap 的过期时间：
+    use-read-only-response-cache: false
+    # 设置read Write CacheMap的expire After Write参数，指定写入多长时间后过期
+    # 有效防止的问题是：应用实例下线时有告知Eureka server下线，但是由于Eureka server的REST API有response cache，因此需要等待缓存过期才能更新
+#    response-cache-auto-expiration-in-seconds: 60
+
+---
+spring:
+  profiles: test
+# 注册中心配置
+eureka:
+  instance:
+    hostname: ${ph-uads-eureka.hostname}
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl:
+      defaultZone: http://uads:uads@${ph-uads-eureka-peer1.hostname}:7001/eureka/,http://uads:uads@${ph-uads-eureka-peer2.hostname}:7001/eureka/
+  server:
+    #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: true
+    # 指定 Eviction Task 定时任务的调度频率，用于剔除过期的实例，此处未使用默认频率，频率为：5/秒，默认为：60/秒
+    # 有效防止的问题是：应用实例异常挂掉，没能在挂掉之前告知Eureka server要下线掉该服务实例信息。这个就需要依赖Eureka server的EvictionTask去剔除。
+    eviction-interval-timer-in-ms: 5000
+    # 指定每分钟需要收到的续约次数的阈值，默认值就是：0.85
+    renewal-percent-threshold: 0.85
+    # 续约频率提高，默认：30
+    lease-renewal-interval-in-seconds: 10
+    # 此处不开启缓存 或者调整 readWriteCacheMap 的过期时间：
+    use-read-only-response-cache: false
+    # 设置read Write CacheMap的expire After Write参数，指定写入多长时间后过期
+    # 有效防止的问题是：应用实例下线时有告知Eureka server下线，但是由于Eureka server的REST API有response cache，因此需要等待缓存过期才能更新
+#    response-cache-auto-expiration-in-seconds: 60
+
+---
+spring:
+  profiles: release
+# 注册中心配置
+eureka:
+  instance:
+    hostname: ${ph-uads-eureka.hostname}
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl:
+      defaultZone: http://uads:uads@${ph-uads-eureka-peer1.hostname}:7001/eureka/,http://uads:uads@${ph-uads-eureka-peer2.hostname}:7001/eureka/
+  server:
+    #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: true
+    # 指定 Eviction Task 定时任务的调度频率，用于剔除过期的实例，此处未使用默认频率，频率为：5/秒，默认为：60/秒
+    # 有效防止的问题是：应用实例异常挂掉，没能在挂掉之前告知Eureka server要下线掉该服务实例信息。这个就需要依赖Eureka server的EvictionTask去剔除。
+    eviction-interval-timer-in-ms: 5000
+    # 指定每分钟需要收到的续约次数的阈值，默认值就是：0.85
+    renewal-percent-threshold: 0.85
+    # 续约频率提高，默认：30
+    lease-renewal-interval-in-seconds: 10
+    # 此处不开启缓存 或者调整 readWriteCacheMap 的过期时间：
+    use-read-only-response-cache: false
+    # 设置read Write CacheMap的expire After Write参数，指定写入多长时间后过期
+    # 有效防止的问题是：应用实例下线时有告知Eureka server下线，但是由于Eureka server的REST API有response cache，因此需要等待缓存过期才能更新
+#    response-cache-auto-expiration-in-seconds: 60
+
+---
+spring:
+  profiles: prod
+# 注册中心配置
+eureka:
+  instance:
+    hostname: ${ph-uads-eureka.hostname}
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true #表示是否注册自身到eureka服务器
+    fetch-registry: false #是否从eureka上获取注册信息
+    serviceUrl:
+      defaultZone: http://uads:uads@${ph-uads-eureka-peer1.hostname}:7001/eureka/,http://uads:uads@${ph-uads-eureka-peer2.hostname}:7001/eureka/
+  server:
+    #配置属性，但由于 Eureka 自我保护模式以及心跳周期长的原因，经常会遇到 Eureka Server 不剔除已关停的节点的问题
+    enable-self-preservation: true
+    # 指定 Eviction Task 定时任务的调度频率，用于剔除过期的实例，此处未使用默认频率，频率为：5/秒，默认为：60/秒
+    # 有效防止的问题是：应用实例异常挂掉，没能在挂掉之前告知Eureka server要下线掉该服务实例信息。这个就需要依赖Eureka server的EvictionTask去剔除。
+    eviction-interval-timer-in-ms: 60000
+    # 指定每分钟需要收到的续约次数的阈值，默认值就是：0.85
+    renewal-percent-threshold: 0.85
+    # 续约频率提高，默认：30
+    lease-renewal-interval-in-seconds: 30
+    # 此处不开启缓存 或者调整 readWriteCacheMap 的过期时间：
+    use-read-only-response-cache: false
+    # 设置read Write CacheMap的expire After Write参数，指定写入多长时间后过期
+    # 有效防止的问题是：应用实例下线时有告知Eureka server下线，但是由于Eureka server的REST API有response cache，因此需要等待缓存过期才能更新
+#    response-cache-auto-expiration-in-seconds: 60
+    
