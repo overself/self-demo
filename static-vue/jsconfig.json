@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "esnext",
+    "baseUrl": "./",
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": [ //src的别名配置，@代表的是src，可以有帮助提示，找文件会方便
+        "src/*"
+      ]
+    },
+    "exclude": [
+      "node_modules",
+      "dist"
+    ],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable",
+      "scripthost"
+    ]
+  }
+}
