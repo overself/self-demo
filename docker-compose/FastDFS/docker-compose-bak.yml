@@ -1,0 +1,47 @@
+version: '3'
+services:
+  fdfs-tracker:
+    image: season/fastdfs:1.2
+    container_name: fdfs-tracker
+    hostname: fdfs-tracker
+    # restart: always
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/tracker/data:/fastdfs/tracker/data
+      #- ${DOCKER_VOLUME_DIRECTORY:-.}/tracker/conf:/etc/fdfs
+    ports:
+      - 22122:22122
+    command: tracker
+    networks:
+      - mynet
+  fdfs-storage:
+    image: season/fastdfs:1.2
+    container_name: fdfs-storage
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/config/storage.conf:/fdfs_conf/storage.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/storage:/fastdfs/storage/data
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/store:/fastdfs/store_path
+    environment:
+      TRACKER_SERVER: "fdfs-tracker:22122"
+    command: storage
+    networks:
+      - mynet
+    depends_on:
+      - fdfs-tracker
+  fdfs-nginx:
+    image: season/fastdfs:1.2
+    container_name: fdfs-nginx
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/config/nginx.conf:/etc/nginx/conf/nginx.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/store:/fastdfs/store_path"
+    environment:
+      TRACKER_SERVER: "fdfs-tracker:22122"
+    command: nginx
+    ports:
+      - 8088:8088
+    networks:
+      - mynet
+    depends_on:
+      - fdfs-storage
+networks:
+  mynet:
+    external: false

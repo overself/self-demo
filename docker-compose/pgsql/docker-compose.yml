@@ -1,0 +1,18 @@
+version: "2"
+services:
+  pgserver:
+    container_name: my-postgres14.8
+    image: postgres:14.8
+    restart: always
+    environment:
+      TZ: PRC
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5432:5432
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/pgdata:/var/lib/postgresql/data
+    networks:
+      - mynet
+networks:
+  mynet:
+    external: false

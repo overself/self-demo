@@ -1,0 +1,27 @@
+# /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P 'abcd@1234'
+# EXEC sp_sqljdbc_xa_install
+version: '3'
+services:
+  dtcsqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: abcd@1234
+      MSSQL_RPC_PORT: 135
+      MSSQL_DTC_TCP_PORT: 5100
+    restart: always
+    container_name: dtc-sql-server
+    hostname: mysqlserver
+    privileged: true
+    ports:
+      - 1433:1433
+      - 135:135
+      - 5100:5100
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/mssql:/var/opt/mssql
+    networks:
+      - codex_cloud
+networks:
+  codex_cloud:
+    name:  codex_cloud
+    driver: bridge

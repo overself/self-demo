@@ -1,0 +1,45 @@
+version: "2"
+x-redash-service: &redash-service
+  image: redash/redash:10.1.0.b50633
+  env_file: ${DOCKER_VOLUME_DIRECTORY:-.}/env
+  restart: always
+  volumes:
+    - ${DOCKER_VOLUME_DIRECTORY:-.}/env:/app/env
+services:
+  server:
+    <<: *redash-service
+    command: server
+    ports:
+      - "5000:5000"
+      - "5678:5678"
+    environment:
+      REDASH_WEB_WORKERS: 4
+    networks:
+      - mynet
+  scheduler:
+    <<: *redash-service
+    command: scheduler
+    environment:
+      QUEUES: "celery"
+      WORKERS_COUNT: 1
+    networks:
+      - mynet
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "scheduled_queries,schemas"
+      WORKERS_COUNT: 1
+    networks:
+      - mynet
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
+    networks:
+      - mynet
+networks:
+  mynet:
+    external: false

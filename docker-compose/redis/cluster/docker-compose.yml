@@ -1,0 +1,113 @@
+version: "2"
+services:
+  redis-server-6349:
+    container_name: redis-6349
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6349:6349
+      - 16349:16349
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6349/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6349/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#    network_mode: 'host'
+    networks:
+      - mynet
+  redis-server-6359:
+    container_name: redis-6359
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6359:6359
+      - 16359:16359
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6359/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6359/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#    network_mode: 'host'
+    networks:
+      - mynet
+  redis-server-6369:
+    container_name: redis-6369
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6369:6369
+      - 16369:16369
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6369/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6369/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#    network_mode: 'host'
+    networks:
+      - mynet
+  redis-server-6379:
+    container_name: redis-6379
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6379:6379
+      - 16379:16379
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6379/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6379/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#    network_mode: 'host'
+#    depends_on:
+#      - redis-server-6349
+#      - redis-server-6359
+#      - redis-server-6369
+#      - redis-server-6389
+#      - redis-server-6399
+    networks:
+      - mynet
+  redis-server-6389:
+    container_name: redis-6389
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6389:6389
+      - 16389:16389
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6389/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6389/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#    network_mode: 'host'
+    networks:
+      - mynet
+  redis-server-6399:
+    container_name: redis-6399
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6399:6399
+      - 16399:16399
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6399/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/6399/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+#   network_mode: 'host'
+    networks:
+      - mynet
+networks:
+  mynet:
+    external: false

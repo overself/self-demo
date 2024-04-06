@@ -1,0 +1,19 @@
+version: '3'
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: abcd@1234
+    restart: always
+    container_name: sql-server
+    ports:
+      - 1433:1433
+    #volumes:
+    #  - ${DOCKER_VOLUME_DIRECTORY:-.}/data/mssql:/var/opt/mssql
+    networks:
+      - codex_cloud
+networks:
+  codex_cloud:
+    name:  codex_cloud
+    driver: bridge

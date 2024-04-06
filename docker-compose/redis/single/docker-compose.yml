@@ -1,0 +1,20 @@
+version: "2"
+services:
+  redisserver:
+    container_name: redis7
+    image: redis:7.0.11
+    restart: always
+    environment:
+      TZ: PRC
+    ports:
+      - 6379:6379
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/config/redis.conf:/etc/redis/redis.conf
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/data:/data
+    command:
+      redis-server /etc/redis/redis.conf
+    networks:
+      - mynet
+networks:
+  mynet:
+    external: false
