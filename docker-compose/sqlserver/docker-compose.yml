@@ -12,8 +12,8 @@ services:
     #volumes:
     #  - ${DOCKER_VOLUME_DIRECTORY:-.}/data/mssql:/var/opt/mssql
     networks:
-      - codex_cloud
+      - mynet
 networks:
-  codex_cloud:
-    name:  codex_cloud
+  mynet:
+    name:  mynet
     driver: bridge
