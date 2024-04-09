@@ -1,7 +1,0 @@
-spring:
-  redis:
-    host: local-redis
-
-test:
-  activate: activate-dev
-  myEnv: ENC(91qL9aVp0EYMHPEu3nrZe/2h3K1jk3NVy4kF0M/KzdI=)

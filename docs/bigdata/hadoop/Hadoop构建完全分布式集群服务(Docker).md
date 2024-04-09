@@ -42,7 +42,7 @@ yum -y remove tzdata-java.noarch
 yum -y remove javapackages-tools.noarch
 
 # 安装1.8版本的JDK
-## hwj2004dhc@163.com/Hanwj@2004
+## 
 ## https://www.oracle.com/cn/java/technologies/downloads/
 ## https://download.oracle.com/otn/java/jdk/8u381-b09/8c876547113c4e4aab3c868e9e0ec572/jdk-8u381-linux-x64.tar.gz?AuthParam=1695712558_bb656d182f8a493a775f95a7e077121e
 tar -zvxf /soft/jdk-8u381-linux-x64.tar.gz -C /usr/local/
@@ -347,10 +347,10 @@ scp -r $HADOOP_HOME/etc/hadoop data-worker01:$HADOOP_HOME/etc
 - 提交已构建好的Hadoop容器为新的容器
 ~~~
 #docker commit -m "hadoop install" {CONTAINER ID} ubuntu:hadoop
-PS C:\Users\DHC> docker commit -m "centos hadoop" ef69bca31ddbe8eae5e79dae4819017fcf27e0014d7b40ecb294fec89a8e7f84 centos_hadoop:1.0.0
+PS C:\Users\Admin> docker commit -m "centos hadoop" ef69bca31ddbe8eae5e79dae4819017fcf27e0014d7b40ecb294fec89a8e7f84 centos_hadoop:1.0.0
 sha256:923bafa87f39a37600a962deb70330fb1d3de5a35089d729b5a3a8c616c9dae2
-PS C:\Users\DHC>
-PS C:\Users\DHC> docker images
+PS C:\Users\Admin>
+PS C:\Users\Admin> docker images
 REPOSITORY                                         TAG             IMAGE ID       CREATED         SIZE
 centos_hadoop                                      1.0.0           923bafa87f39   4 minutes ago   4.48GB
 ~~~
@@ -364,15 +364,15 @@ docker network create --driver=bridge hadoop_net
 docker network ls
 docker network inspect hadoop_net
 ~~~~~~ shell
-PS C:\Users\DHC> docker network ls
+PS C:\Users\Admin> docker network ls
 NETWORK ID     NAME              DRIVER    SCOPE
 d11f02fd2ef0   bridge            bridge    local
 ba0e826a74cd   host              host      local
 bb185d047101   none              null      local
 
-PS C:\Users\DHC> docker network create --driver=bridge hadoop_net
+PS C:\Users\Admin> docker network create --driver=bridge hadoop_net
 d924bf46a7a2cf664720c2b88727769afbca5d415af304d4c95dad1fa3303acf
-PS C:\Users\DHC> docker network inspect hadoop_net
+PS C:\Users\Admin> docker network inspect hadoop_net
 [
     {
         "Name": "hadoop_net",
@@ -403,7 +403,7 @@ PS C:\Users\DHC> docker network inspect hadoop_net
         "Labels": {}
     }
 ]
-PS C:\Users\DHC>
+PS C:\Users\Admin>
 ~~~ 
 
 - 新建容器集群（data-master01，data-worker01，data-worker02）
@@ -422,13 +422,13 @@ PS C:\Users\DHC>
 # docker run -itd -p 12222:22 -p 19870:9870 -p 18080:8080 -p 10020:10020 -p 10021:10021 -p 18088:8088 -p 19888:19888 -p 18042:8042 -p 18031:8031 -p 18032:8032 -p 19000:9000 -p 19077:9077 -h data-master01 --network hadoop_net --privileged=true --name=hadoop-master01 centos_hadoop:1.1.0 /sbin/init
 # docker run -itd -p 14422:22 -p 19874:9864 -p 18142:8042 -h data-worker01 --network hadoop_net --privileged=true --name=hadoop-worker01 centos_hadoop:1.1.0 /sbin/init
 # docker run -itd -p 15522:22 -p 19884:9864 -p 18242:8042 -h data-worker02 --network hadoop_net --privileged=true --name=hadoop-worker02 centos_hadoop:1.1.0 /sbin/init
-PS C:\Users\DHC> docker run -itd -p 12222:22 -p 10020:10020 -p 10021:10021 -p 19888:19888 -p 9870:9870 -p 8080:8080 -p 8088:8088 -p 8042:8042 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 9077:9077 -p 9000:9000 -p 9864:9864 -h data-master01 --network hadoop_net --privileged=true --name=hadoop-master01 centos_hadoop:1.1.0 /sbin/init
+PS C:\Users\Admin> docker run -itd -p 12222:22 -p 10020:10020 -p 10021:10021 -p 19888:19888 -p 9870:9870 -p 8080:8080 -p 8088:8088 -p 8042:8042 -p 8030:8030 -p 8031:8031 -p 8032:8032 -p 8033:8033 -p 9077:9077 -p 9000:9000 -p 9864:9864 -h data-master01 --network hadoop_net --privileged=true --name=hadoop-master01 centos_hadoop:1.1.0 /sbin/init
 0fe2bc15b60387961eaa1f9e0e9be680153dc1fd349845d517e80e11ae9515e3
-PS C:\Users\DHC> docker run -itd -p 14422:22 -p 9874:9864 -p 18042:8042 -p 8142:8142 -h data-worker01 --network hadoop_net --privileged=true --name=hadoop-worker01 centos_hadoop:1.1.0 /sbin/init
+PS C:\Users\Admin> docker run -itd -p 14422:22 -p 9874:9864 -p 18042:8042 -p 8142:8142 -h data-worker01 --network hadoop_net --privileged=true --name=hadoop-worker01 centos_hadoop:1.1.0 /sbin/init
 fb2112db97b36730a5ad54bc774599c107cfccd2763910c397a8d93fe6016db1
-PS C:\Users\DHC> docker run -itd -p 15522:22 -p 9884:9864 -p 28042:8042 -p 8242:8242 -h data-worker02 --network hadoop_net --privileged=true --name=hadoop-worker02 centos_hadoop:1.1.0 /sbin/init
+PS C:\Users\Admin> docker run -itd -p 15522:22 -p 9884:9864 -p 28042:8042 -p 8242:8242 -h data-worker02 --network hadoop_net --privileged=true --name=hadoop-worker02 centos_hadoop:1.1.0 /sbin/init
 bc5f0f719fab9521409049ce6122552d49b7490639113cfa5f98ba9dfa9c68fb
-PS C:\Users\DHC>
+PS C:\Users\Admin>
 ~~~
 - 验证三个容器之间是否可以免密SSH登录
 ~~~ shell

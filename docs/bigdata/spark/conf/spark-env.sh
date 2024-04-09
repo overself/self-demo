@@ -19,7 +19,7 @@
 
 # This file is sourced when running various Spark programs.
 # Copy it as spark-env.sh and edit that to configure Spark for your site.
-#HWJ ADD
+#USER00001 ADD
 export JAVA_HOME=/usr/local/java
 export HADOOP_HOME=/usr/local/hadoop
 export HADOOP_CONF_DIR=/usr/local/etc/hadoop
@@ -63,7 +63,7 @@ export HADOOP_CONF_DIR=/usr/local/etc/hadoop
 # - SPARK_DAEMON_JAVA_OPTS, to set config properties for all daemons (e.g. "-Dx=y")
 # - SPARK_DAEMON_CLASSPATH, to set the classpath for all daemons
 # - SPARK_PUBLIC_DNS, to set the public dns name of the master or workers
-# HWJ ADD
+# USER00001 ADD
 SPARK_MASTER_HOST=data-master01
 SPARK_MASTER_PORT=9077
 

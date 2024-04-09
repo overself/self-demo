@@ -15,7 +15,7 @@
 <configuration>
 
 <!-- Site specific YARN configuration properties -->
-    <!-- HWJ ADD START 9/27 -->
+    <!-- USER00001 ADD START 9/27 -->
     <!-- Configurations for ResourceManager and NodeManager -->
     <property>
         <name>yarn.acl.enable</name>
@@ -100,6 +100,6 @@
     	<name>yarn.log-aggregation.retain-seconds</name>
     	<value>604800</value>
     </property>
-    <!-- HWJ ADD END 9/27 -->
+    <!-- USER00001 ADD END 9/27 -->
 
 </configuration>

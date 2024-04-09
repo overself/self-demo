@@ -9,34 +9,10 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <parent>
-        <groupId>com.hanwj</groupId>
-        <artifactId>hanwj-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-
     <properties>
-        <platform.version>1.0.0-SNAPSHOT</platform.version>
     </properties>
 
     <modules>
-        <module>sample-web</module>
-        <module>hanwj-webflux</module>
-        <module>design-patterns</module>
-        <module>sample-dubbo</module>
     </modules>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.hanwj</groupId>
-                <artifactId>hanwj-framework</artifactId>
-                <version>${platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
 
 </project>

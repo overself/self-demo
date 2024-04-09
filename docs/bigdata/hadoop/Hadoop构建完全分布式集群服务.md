@@ -147,7 +147,7 @@ yum -y remove tzdata-java.noarch
 yum -y remove javapackages-tools.noarch
 
 # 安装1.8版本的JDK
-## hwj2004dhc@163.com/Hanwj@2004
+## 
 ## https://www.oracle.com/cn/java/technologies/downloads/
 ## https://download.oracle.com/otn/java/jdk/8u381-b09/8c876547113c4e4aab3c868e9e0ec572/jdk-8u381-linux-x64.tar.gz?AuthParam=1695712558_bb656d182f8a493a775f95a7e077121e
 tar -zvxf /soft/jdk-8u381-linux-x64.tar.gz -C /usr/local/
@@ -431,19 +431,19 @@ data-worker02
 #### 2.1.5 修改启动shell脚本
 ~~~shell
 # sbin/start-dfs.sh，stop-dfs.sh
-#HWJ ADD
+#USER00001 ADD
 HDFS_DATANODE_USER=root
 HDFS_DATANODE_SECURE_USER=root
 HDFS_NAMENODE_USER=root
 HDFS_SECONDARYNAMENODE_USER=root
-#HWJ ADD
+#USER00001 ADD
 
 # sbin/start-yarn.sh，stop-yarn.sh
-#HWJ ADD
+#USER00001 ADD
 YARN_RESOURCEMANAGER_USER=root
 HADOOP_SECURE_DN_USER=root
 YARN_NODEMANAGER_USER=root
-#HWJ ADD
+#USER00001 ADD
 ~~~
 
 **注意：修改脚步后可以通过命令同步，如**

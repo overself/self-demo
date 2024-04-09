@@ -17,7 +17,7 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- HWJ ADD START 9/27-->
+    <!-- USER00001 ADD START 9/27-->
     <property>
         <name>fs.defaultFS</name>
         <value>hdfs://data-master01:9000</value>
@@ -35,5 +35,5 @@
         <name>hadoop.http.staticuser.user</name>
         <value>root</value>
     </property>
-    <!-- HWJ ADD END 9/27-->
+    <!-- USER00001 ADD END 9/27-->
 </configuration>

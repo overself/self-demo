@@ -52,7 +52,7 @@
 # The java implementation to use. By default, this environment
 # variable is REQUIRED on ALL platforms except OS X!
 # export JAVA_HOME=
-# HWJ ADD
+# USER00001 ADD
 export JAVA_HOME=/usr/local/java
 
 # Location of Hadoop.  By default, Hadoop will attempt to determine
@@ -92,7 +92,7 @@ export JAVA_HOME=/usr/local/java
 # export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true"
 # For Kerberos debugging, an extended option set logs more information
 # export HADOOP_OPTS="-Djava.net.preferIPv4Stack=true -Dsun.security.krb5.debug=true -Dsun.security.spnego.debug"
-#HWJ ADD
+#USER00001 ADD
 export HADOOP_OPTS="${HADOOP_OPTS} -Djava.library.path=${HADOOP_HOME}/lib/native"
 
 # Some parts of the shell code may do special things dependent upon
@@ -189,7 +189,7 @@ export HADOOP_OS_TYPE=${HADOOP_OS_TYPE:-$(uname -s)}
 # ${HADOOP_HOME}/logs by default.
 # Java property: hadoop.log.dir
 # export HADOOP_LOG_DIR=${HADOOP_HOME}/logs
-#HWJ ADD
+#USER00001 ADD
 export HADOOP_LOG_DIR=/tmp/hadoop/logs
 
 # A string representing this instance of hadoop. $USER by default.
@@ -202,7 +202,7 @@ export HADOOP_LOG_DIR=/tmp/hadoop/logs
 
 # Where pid files are stored.  /tmp by default.
 # export HADOOP_PID_DIR=/tmp
-#HWJ ADD
+#USER00001 ADD
 export HADOOP_PID_DIR=/tmp/hadoop
 
 # Default log4j setting for interactive commands
@@ -296,7 +296,7 @@ export HADOOP_PID_DIR=/tmp/hadoop
 
 # this is the default:
 # export HDFS_NAMENODE_OPTS="-Dhadoop.security.logger=INFO,RFAS"
-#HWJ ADD
+#USER00001 ADD
 export HDFS_NAMENODE_OPTS="-XX:+UseParallelGC -Xmx4g ${HDFS_NAMENODE_OPTS}"
 
 ###
@@ -425,7 +425,7 @@ export HDFS_NAMENODE_OPTS="-XX:+UseParallelGC -Xmx4g ${HDFS_NAMENODE_OPTS}"
 #
 # For example, to limit who can execute the namenode command,
 # export HDFS_NAMENODE_USER=hdfs
-#HWJ ADD
+#USER00001 ADD
 export HDFS_NAMENODE_USER=root
 
 ###

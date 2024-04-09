@@ -16,11 +16,11 @@
 # limitations under the License.
 
 
-#HWJ ADD
+#USER00001 ADD
 YARN_RESOURCEMANAGER_USER=root
 HADOOP_SECURE_DN_USER=yarn
 YARN_NODEMANAGER_USER=root
-#HWJ ADD
+#USER00001 ADD
 
 ## @description  usage info
 ## @audience     private

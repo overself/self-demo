@@ -17,7 +17,7 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- HWJ ADD START 9/27-->
+    <!-- USER00001 ADD START 9/27-->
     <!--Configurations for NameNode-->
     <property>
         <name>dfs.namenode.name.dir</name>
@@ -49,5 +49,5 @@
         <value>file://${hadoop.tmp.dir}/hdfs/datanode</value>
         <description>DataNode directory</description>
     </property>
-    <!-- HWJ ADD END 9/27-->
+    <!-- USER00001 ADD END 9/27-->
 </configuration>

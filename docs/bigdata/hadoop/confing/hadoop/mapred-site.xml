@@ -17,7 +17,7 @@
 <!-- Put site-specific property overrides in this file. -->
 
 <configuration>
-    <!-- HWJ ADD START 9/27 -->
+    <!-- USER00001 ADD START 9/27 -->
     <!-- Configurations for MapReduce Applications -->
     <property>
         <name>mapreduce.framework.name</name>
@@ -40,5 +40,5 @@
     	  <value>data-worker01:19890</value>>
     	  <description>The https address the MapReduce JobHistory Server WebApp is on.</description>
     </property>
-    <!-- HWJ ADD END 9/27 -->
+    <!-- USER00001 ADD END 9/27 -->
 </configuration>

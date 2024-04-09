@@ -17,12 +17,12 @@
 
 # Stop hadoop dfs daemons.
 # Run this on master node.
-#HWJ ADD
+#USER00001 ADD
 HDFS_DATANODE_USER=root
 HDFS_DATANODE_SECURE_USER=hdfs
 HDFS_NAMENODE_USER=root
 HDFS_SECONDARYNAMENODE_USER=root
-#HWJ ADD
+#USER00001 ADD
 
 ## @description  usage info
 ## @audience     private

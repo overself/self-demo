@@ -20,12 +20,12 @@
 # Optinally upgrade or rollback dfs state.
 # Run this on master node.
 
-#HWJ ADD
+#USER00001 ADD
 HDFS_DATANODE_USER=root
 HDFS_DATANODE_SECURE_USER=root
 HDFS_NAMENODE_USER=root
 HDFS_SECONDARYNAMENODE_USER=root
-#HWJ ADD
+#USER00001 ADD
 
 ## startup matrix:
 #
