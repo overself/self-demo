@@ -1,4 +1,4 @@
-# hanwj-demo
+# self-demo
 
 https://beam.apache.org/
 
