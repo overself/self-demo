@@ -66,3 +66,58 @@ CREATE TABLE partitioned_table (column INTEGER) PARTITION BY RANGE (column);
 ~~~postgresql
 VACUUM ANALYZE;
 ~~~
+
+## SQL语句或条件可能导致索引失效
+在PostgreSQL中，某些SQL语句或条件可能导致索引失效，即查询优化器不会使用可用的索引。这会导致性能下降，因为数据库会进行全表扫描而不是利用索引
+- 函数和表达式
+~~~postgresql
+-- 在索引列上使用函数或表达式：
+SELECT * FROM table WHERE LOWER(column) = 'value'; -- 索引可能失效
+-- 在这种情况下，索引无法使用。解决方案是创建表达式索引：
+CREATE INDEX idx_lower_column ON table (LOWER(column));
+~~~
+- 类型转换
+~~~postgresql
+-- 隐式或显式类型转换,确保查询中的类型与索引列的类型一致。
+SELECT * FROM table WHERE column::text = 'value'; -- 索引可能失效
+~~~
+- 使用不等于操作符
+~~~postgresql
+-- 使用!=或<>：不等于操作符通常会导致索引失效，因为数据库无法通过索引快速排除结果。
+SELECT * FROM table WHERE column != 'value'; -- 索引可能失效
+~~~
+- 使用IS NULL或IS NOT NULL
+~~~postgresql
+SELECT * FROM table WHERE column IS NULL; -- 索引可能失效
+SELECT * FROM table WHERE column IS NOT NULL; -- 索引可能失效
+-- 可以通过创建部分索引来优化这类查询：
+CREATE INDEX idx_column_not_null ON table (column) WHERE column IS NOT NULL;
+~~~
+- LIKE操作
+~~~postgresql
+-- 前缀通配符：
+SELECT * FROM table WHERE column LIKE '%value'; -- 索引可能失效
+-- 使用前缀通配符时，索引无法使用。可以使用后缀通配符优化查询：
+SELECT * FROM table WHERE column LIKE 'value%'; -- 索引生效
+~~~
+- 布尔运算
+~~~postgresql
+-- 在布尔列上使用非索引值
+SELECT * FROM table WHERE NOT (column = 'value'); -- 索引可能失效
+-- 重写查询以使用索引
+SELECT * FROM table WHERE column != 'value'; -- 更可能使用索引
+~~~
+- 范围条件
+~~~postgresql
+-- 使用复杂的范围条件
+SELECT * FROM table WHERE column > 'value1' AND column < 'value2'; -- 索引可能失效
+~~~
+- 联合查询: 使用UNION而不是UNION ALL
+~~~postgresql
+SELECT * FROM table1 WHERE column = 'value'
+UNION
+SELECT * FROM table2 WHERE column = 'value'; -- 索引可能失效
+-- UNION会去重，可能导致索引失效。UNION ALL不会去重，更可能使用索引
+~~~
+- 查询优化器设置 : 禁用索引扫描<br>
+  查询优化器设置可能导致索引未使用。可以通过SET enable_seqscan = OFF;强制使用索引，但不建议长期使用。
