@@ -1,3 +1,74 @@
 https://github.com/DEmodoriGatsuO/sharepoint-mcp.git
 
 https://learn.microsoft.com/zh-cn/graph/graph-explorer/graph-explorer-overview
+
+# 1. 安装依赖
+pip install requests
+
+# 2. 设置环境变量（推荐）
+export SHAREPOINT_TENANT_ID="your_tenant_id"
+export SHAREPOINT_CLIENT_ID="your_client_id"
+export SHAREPOINT_CLIENT_SECRET="your_client_secret"
+export SHAREPOINT_SITE_HOSTNAME="company.sharepoint.com"
+export SHAREPOINT_SITE_PATH="sites/MyTeam"
+
+# 3. 运行代码
+python sharepoint_client.py
+
+在浏览器中打开您的SharePoint站点
+
+查看地址栏URL，例如：https://company.sharepoint.com/sites/MyProjectTeam
+
+拆分：
+
+site_hostname: company.sharepoint.com
+
+site_path: sites/MyProjectTeam
+
+-------------------------
+import msal
+import requests
+
+# 1. 填写你的Azure应用信息
+tenant_id = "your-tenant-id"
+client_id = "your-client-id"
+client_secret = "your-client-secret"
+authority = f"https://login.microsoftonline.com/{tenant_id}"
+
+# 2. 定义要访问的API范围
+scope = ["https://graph.microsoft.com/.default"]
+
+# 3. 创建MSAL客户端并获取令牌
+app = msal.ConfidentialClientApplication(
+    client_id=client_id,
+    client_credential=client_secret,
+    authority=authority
+)
+result = app.acquire_token_for_client(scopes=scope)
+
+if "access_token" in result:
+    access_token = result["access_token"]
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Content-Type": "application/json"
+    }
+    print("令牌获取成功")
+else:
+    print("令牌获取失败:", result.get("error_description"))
+    exit()
+---------------------------------------------------
+# 假设你的SharePoint站点URL是：https://your-domain.sharepoint.com/sites/YourSiteName
+site_hostname = "your-domain.sharepoint.com"
+site_path = "sites/YourSiteName"
+
+# 1. 通过站点URL获取站点ID
+get_site_url = f"https://graph.microsoft.com/v1.0/sites/{site_hostname}:/{site_path}"
+site_response = requests.get(get_site_url, headers=headers).json()
+site_id = site_response["id"]
+print(f"站点ID: {site_id}")
+
+# 2. 获取该站点的默认驱动器（文档库）ID
+get_drives_url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
+drives_response = requests.get(get_drives_url, headers=headers).json()
+drive_id = drives_response["value"][0]["id"] # 通常第一个是默认文档库
+print(f"驱动器ID: {drive_id}")
