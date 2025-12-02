@@ -1,0 +1,3 @@
+https://github.com/DEmodoriGatsuO/sharepoint-mcp.git
+
+https://learn.microsoft.com/zh-cn/graph/graph-explorer/graph-explorer-overview
